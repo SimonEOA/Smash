@@ -1,0 +1,20 @@
+policy:
+  approval:
+    - one approval
+  disapproval:
+    # "if" specifies a set of predicates which will cause disapproval if any are 
+    # true
+    if:
+      title:
+        not_matches:
+          - "^(fix|feat|chore|refactor|style|perf|build|docs|test|revert)(\\(.+\\))?: (.)+$"
+        matches:
+          - "^BLOCKED"
+    requires:
+      organizations: ["Alobyte-Consulting"]
+
+approval_rules:
+  - name: one approval
+    requires:
+      count: 1
+      organizations: ["Alobyte-Consulting"]
