@@ -1,0 +1,16 @@
+SMASH 
+
+Monorepo:
+    - frontend:
+        React.js (Next.js)
+    - backend:
+        Python (FastAPI)
+    - models:
+        Named Entity Recognition (NER) model:
+            - Flair
+        Language Model:
+            - OpenAI GPT-3.5 turbo api
+    - database:
+        PostgreSQL
+    - deployment:
+        in progress
