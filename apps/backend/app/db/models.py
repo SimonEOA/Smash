@@ -9,6 +9,8 @@ class SongMetadata(Base):
     name = Column(String,nullable=False)
     artist = Column(String,nullable=False)
     album = Column(String)
+    lyrics = Column(String)
+    created_by = Column(Integer, nullable=False)
 
 class SongCategory(Base):
     __tablename__ = "song_category"
@@ -20,6 +22,8 @@ class SongCategory(Base):
     line = Column(Integer)
     start = Column(Integer)
     end = Column(Integer)
+    created_by = Column(Integer, nullable=False)
+    gpt_verified = Column(Boolean, default=False)
 
 class User(Base):
     __tablename__ = "user"

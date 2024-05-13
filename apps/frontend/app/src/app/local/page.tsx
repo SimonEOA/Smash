@@ -1,6 +1,5 @@
 "use client";
 import { use, useEffect, useState } from "react";
-import { copyFileSync } from "fs";
 import MusicCard from "@/components/card/MusicCard";
 
 type Song = {
@@ -61,7 +60,7 @@ const Local = () => {
 
   useEffect(() => {
     // Only execute this block in the client-side environment
-    const audioElements = songs.map(song => {
+    const audioElements = songs.map((song) => {
       const audio = new Audio(song.url);
       audio.load();
       console.log(song.id, song.url, audio);
@@ -72,7 +71,7 @@ const Local = () => {
     console.log("audioElements", audioElements);
 
     return () => {
-      audioElements.forEach(audio => {
+      audioElements.forEach((audio) => {
         audio.pause();
         audio.currentTime = 0;
       });
@@ -115,8 +114,8 @@ const Local = () => {
       audios[currentSong].addEventListener("timeupdate", () => {
         setTimeLeft(
           Math.floor(
-            audios[currentSong].duration - audios[currentSong].currentTime,
-          ),
+            audios[currentSong].duration - audios[currentSong].currentTime
+          )
         );
       });
     }
@@ -127,7 +126,9 @@ const Local = () => {
       <div className=" flex flex-row gap-4">
         {songs.map((song, index) => (
           <div
-            className={` h-5 w-5 rounded-full border-4 ${currentSong === song.id ? "bg-white/50" : "bg-white/10"} `}
+            className={` h-5 w-5 rounded-full border-4 ${
+              currentSong === song.id ? "bg-white/50" : "bg-white/10"
+            } `}
             key={index}
           />
         ))}

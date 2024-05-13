@@ -16,14 +16,8 @@ h1 {
   /*   text-shadow: 0 0 5px #f562ff, 0 0 15px #f562ff, 0 0 25px #f562ff,
     0 0 20px #f562ff, 0 0 30px #890092, 0 0 80px #890092, 0 0 80px #890092;
   color: #fccaff; */
-  text-shadow:
-    0 0 5px #ffa500,
-    0 0 15px #ffa500,
-    0 0 20px #ffa500,
-    0 0 40px #ffa500,
-    0 0 60px #ff0000,
-    0 0 10px #ff8d00,
-    0 0 98px #ff0000;
+  text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
+    0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
   color: #fff6a9;
   font-family: "Sacramento", cursive;
   text-align: center;
@@ -66,14 +60,8 @@ body {
     /*     color: #fccaff;
     text-shadow: 0 0 5px #f562ff, 0 0 15px #f562ff, 0 0 25px #f562ff,
       0 0 20px #f562ff, 0 0 30px #890092, 0 0 80px #890092, 0 0 80px #890092; */
-    text-shadow:
-      0 0 5px #ffa500,
-      0 0 15px #ffa500,
-      0 0 20px #ffa500,
-      0 0 40px #ffa500,
-      0 0 60px #ff0000,
-      0 0 10px #ff8d00,
-      0 0 98px #ff0000;
+    text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
+      0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
     color: #fff6a9;
   }
 }
@@ -97,14 +85,8 @@ body {
     /*     color: #fccaff;
     text-shadow: 0 0 5px #f562ff, 0 0 15px #f562ff, 0 0 25px #f562ff,
       0 0 20px #f562ff, 0 0 30px #890092, 0 0 80px #890092, 0 0 80px #890092; */
-    text-shadow:
-      0 0 5px #ffa500,
-      0 0 15px #ffa500,
-      0 0 20px #ffa500,
-      0 0 40px #ffa500,
-      0 0 60px #ff0000,
-      0 0 10px #ff8d00,
-      0 0 98px #ff0000;
+    text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
+      0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
     color: #fff6a9;
   }
 }
@@ -128,7 +110,6 @@ body {
 }
 
 @layer utilities {
-
   .btn {
     @apply inline-block px-4 py-2 text-white border-white/20 bg-white/10 border rounded shadow-md hover:bg-white/20 active:bg-white/30;
   }
@@ -169,6 +150,6 @@ body {
   }
 
   .input {
-    @apply block w-full px-4 py-2 text-white border-white/20 bg-white/10 border rounded shadow-md;
+    @apply flex w-full items-center justify-center px-4 py-2 text-white border-white/20 bg-white/10 border rounded shadow-md;
   }
 }

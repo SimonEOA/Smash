@@ -2,19 +2,35 @@
 
 import { useEffect, useState } from "react";
 import Card from "./Card";
+import Link from "next/link";
 
 const MenuCard = ({
-  children,
+  title,
+  description,
+  linkTitle,
+  link,
 }: {
-  children: React.ReactNode;
+  title: string;
+  description: string;
+  linkTitle: string;
+  link: string;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
-  
   return (
-    <Card isFlipped={isFlipped} setIsFlipped={setIsFlipped}>
-       {children}
-    </Card>
+    <div className="flex flex-col items-center justify-center gap-2">
+      <Card isFlipped={isFlipped} setIsFlipped={setIsFlipped}>
+        <div className="flip-front">
+          <p className="text-lg font-medium">{title}</p>
+        </div>
+        <div className="flip-back p-1">
+          <p>{description}</p>
+        </div>
+      </Card>
+      <Link className="btn" href={link}>
+        {linkTitle}
+      </Link>
+    </div>
   );
 };
 export default MenuCard;

@@ -5,7 +5,7 @@ from app.db.database import get_db
 from fastapi import APIRouter
 from app.api.schema import UserCreate, Token, UserLogin
 from app.db.models import User, TokenTable
-from utils import create_access_token, get_password_hash, verify_password
+from utils import create_access_token, get_current_token, get_current_user, get_password_hash, verify_password
 
 
 
@@ -40,14 +40,36 @@ def login(request: UserLogin, db: Session = Depends(get_db)):
     hashed_pass = user.password
     if not verify_password(request.password, hashed_pass):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect password"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
     
-    access=create_access_token(user.id)
+    # check if token already exists (future improvement: check if token is expired and create new token if expired)
+    tokenTable = db.query(TokenTable).filter(TokenTable.user_id == user.id).first()
 
-    token_db = TokenTable(user_id=user.id,  access_token=access, status=True)
-    db.add(token_db)
-    db.commit()
-    db.refresh(token_db)
-    return Token(access_token=access, token_type="bearer")
+    # create token if not exists
+    token = None
+    if not tokenTable:
+        token=create_access_token(user.id)
+        token_db = TokenTable(user_id=user.id,  access_token=token, status=True)
+        db.add(token_db)
+        db.commit()
+        db.refresh(token_db)
+    else:
+        # use existing token if exists
+        token = tokenTable.access_token
+    return Token(access_token=token, token_type="bearer")
+
+
+
+@router.delete('/logout')
+def logout(token: str = Depends(get_current_token), db: Session = Depends(get_db)):
+    tokenTable = db.query(TokenTable).filter(TokenTable.access_token == token).first()
+    if tokenTable:
+        # remove token from db
+        db.delete(tokenTable)
+        db.commit()
+        return {"message": "Logged out successfully"}
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token not found")

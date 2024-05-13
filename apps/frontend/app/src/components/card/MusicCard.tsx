@@ -58,18 +58,24 @@ const MusicCard = ({
 
   return (
     <div className="flex flex-col items-center justify-center gap-2">
-      <Card isFlipped={isFlipped} setIsFlipped={setIsFlipped} guessedWrong={guessedWrong}>
-          <div className="flip-front">
-            <p className="text-lg font-medium">{thing}</p>
-            <p>{category}</p>
-          </div>
-          <div className="flip-back">
-            <p className="text-lg font-semibold">{title}</p>
-            <p>{description}</p>
-          </div>
+      <Card
+        isFlipped={isFlipped}
+        setIsFlipped={setIsFlipped}
+        guessedWrong={guessedWrong}
+      >
+        <div className="flip-front">
+          <p className="text-lg font-medium">{thing}</p>
+          <p>{category}</p>
+        </div>
+        <div className="flip-back">
+          <p className="text-lg font-semibold">{title}</p>
+          <p>{description}</p>
+        </div>
       </Card>
       <div
-        className={` flex h-12 w-12 items-center justify-center rounded border-white/10  transition-all  ${keyDown ? " bg-white/10" : " bg-white/15"}`}
+        className={` flex h-12 w-12 items-center justify-center rounded border-white/10  transition-all  ${
+          keyDown ? " bg-white/10" : " bg-white/15"
+        }`}
       >
         {keyValue}
       </div>
