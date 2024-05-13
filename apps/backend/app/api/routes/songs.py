@@ -1,16 +1,16 @@
 from typing import List
-from fastapi import HTTPException, Depends
+from fastapi import Depends
 from sqlalchemy.orm import Session
 from starlette import status
-from db.database import get_db
+from app.db.database import get_db
 from fastapi import APIRouter
-from schema import CreateSong
-from db.models import SongMetadata, SongCategory
+from app.api.schema import CreateSong, InputSong
+from app.db.models import SongMetadata, SongCategory
 
 
 router = APIRouter(
-    prefix='/songs',
-    tags=['Songs']
+    prefix='/song',
+    tags=['Song']
 )
 
 
@@ -36,5 +36,15 @@ def add_new_song(request:CreateSong, db:Session = Depends(get_db)):
         db.refresh(new_category)
 
     return {"message": "Song added successfully"}
+
+@router.post('/test_add', status_code=status.HTTP_200_OK)
+def test_connection(request:InputSong, db:Session = Depends(get_db)):
+
+    print(request.lyrics)
+
+    return {"message": f"Connection successful request: {request.lyrics}"}
+
+
+
 
 

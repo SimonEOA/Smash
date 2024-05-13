@@ -1,7 +1,7 @@
 # this sets up the container with python 3.10
 FROM python:3.10-slim
 
-# this copies everything in the Dockerfile directory to /app directory in tyhe container
+# this copies everything in the Dockerfile directory to /app directory in the container
 COPY . /app
 
 # change working dir
