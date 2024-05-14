@@ -16,7 +16,7 @@ const LoginPage: React.FC = () => {
     try {
       await login(email, password);
 
-      router.push("/menu");
+      router.push("/upload/individual");
     } catch (error) {
       console.error("Failed to log in:", error);
       // Show error message
@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
     <main className="flex h-screen w-screen flex-row items-center justify-center gap-10">
       <div className="flex flex-col gap-4">
         <h2 className="text-4xl font-bold">Login</h2>
-        <p className="text-lg font-medium">
+        <p className=" font-medium">
           Login to upload individual lyrics for a song directly or csv with
           columns "title", "artist", "album" for processing and creating your
           own deck

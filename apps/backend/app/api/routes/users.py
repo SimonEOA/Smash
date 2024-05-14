@@ -5,7 +5,7 @@ from app.db.database import get_db
 from fastapi import APIRouter
 from app.api.schema import UserCreate, Token, UserLogin
 from app.db.models import User, TokenTable
-from utils import create_access_token, get_current_token, get_current_user, get_password_hash, verify_password
+from app.utils import create_access_token, get_current_token, get_current_user, get_password_hash, verify_password
 
 
 

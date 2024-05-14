@@ -61,6 +61,7 @@ const MusicCard = ({
       <Card
         isFlipped={isFlipped}
         setIsFlipped={setIsFlipped}
+        clickable={false}
         guessedWrong={guessedWrong}
       >
         <div className="flip-front">

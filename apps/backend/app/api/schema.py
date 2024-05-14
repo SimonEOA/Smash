@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel
 
 
@@ -13,7 +14,8 @@ class entity(BaseModel):
     text: str
     value: str
     score: float
-    line: int
+    line_index: int
+    line_text: str
     start: int
     end: int
 
@@ -25,8 +27,22 @@ class CreateSong(SongBase):
     class Config:
         from_attributes = True
 
-class InputSong(BaseModel):
+class SongProcessNer(SongBase):
     lyrics: str
+    class Config:
+        from_attributes = True
+
+
+class SongCreateManually(SongBase):
+    lyrics: str
+    entity_text: str
+    entity_value: str
+    entity_score: float
+    entity_line_text: str
+    entity_line_index: int
+    entity_start: int
+    entity_end: int
+    gpt_verified: bool
 
     class Config:
         from_attributes = True

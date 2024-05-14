@@ -16,7 +16,9 @@ const Header = () => {
   return (
     <header className="w-screen h-16 bg-white/10 flex items-center justify-between px-16">
       <div>
-        <h2 className="text-3xl text-white font-bold">Smash</h2>
+        <Link href="/" className="text-white">
+          <h2 className="text-3xl text-white font-bold">Smash</h2>
+        </Link>
       </div>
       {!token ? (
         <div className="flex flex-row gap-5">

@@ -1,13 +1,15 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const LoginPage: React.FC = () => {
+const Register = () => {
   const { register } = useAuth();
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -15,6 +17,7 @@ const LoginPage: React.FC = () => {
     try {
       await register(userName, email, password);
       // Navigate to a protected route or display success message
+      router.push("/login");
     } catch (error) {
       console.error("Failed to log in:", error);
       // Show error message
@@ -25,7 +28,7 @@ const LoginPage: React.FC = () => {
     <main className="flex h-screen w-screen flex-row items-center justify-center gap-10">
       <div className="flex flex-col gap-4">
         <h2 className="text-4xl font-bold">Register</h2>
-        <p className="text-lg font-medium">
+        <p className=" font-medium">
           Register to upload individual lyrics for a song directly or csv with
           columns "title", "artist", "album" for processing and creating your
           own deck
@@ -67,4 +70,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default Register;

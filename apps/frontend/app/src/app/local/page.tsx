@@ -59,7 +59,6 @@ const Local = () => {
   const [audios, setAudios] = useState<HTMLAudioElement[]>([]);
 
   useEffect(() => {
-    // Only execute this block in the client-side environment
     const audioElements = songs.map((song) => {
       const audio = new Audio(song.url);
       audio.load();
@@ -134,7 +133,8 @@ const Local = () => {
         ))}
       </div>
       <div>
-        <h2 className="text-center text-6xl font-bold">Music Thing</h2>
+        <h2 className="text-center text-6xl font-bold">Preview</h2>
+        <p className="text-center text-2xl font-bold">Game in development</p>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-5">
         {songs.map((song, index) => (

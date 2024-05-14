@@ -6,18 +6,20 @@ const Card = ({
   children,
   isFlipped,
   setIsFlipped,
+  clickable = true,
   guessedWrong,
 }: {
   children: React.ReactNode;
   isFlipped: boolean;
   setIsFlipped: (isFlipped: boolean) => void;
+  clickable?: boolean;
   guessedWrong?: boolean;
 }) => {
   return (
     <div
       className="flip cursor-pointer"
       onClick={() => {
-        setIsFlipped(!isFlipped);
+        clickable && setIsFlipped(!isFlipped);
         console.log("flipped");
       }}
     >
