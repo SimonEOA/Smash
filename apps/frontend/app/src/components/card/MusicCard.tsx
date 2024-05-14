@@ -11,6 +11,7 @@ const MusicCard = ({
   category,
   keyValue,
   currentSongId,
+  isPlaying,
 }: {
   id: number;
   title: string;
@@ -19,6 +20,7 @@ const MusicCard = ({
   category: string;
   keyValue: string;
   currentSongId: number | undefined | null;
+  isPlaying: boolean;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [keyDown, setKeyDown] = useState(false);
@@ -28,8 +30,9 @@ const MusicCard = ({
     // add keydown event listener for keyValue to flip card if currentSong is the same as keyValue
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === keyValue) {
+        console.log("key down", keyValue, id, currentSongId, isPlaying);
         setKeyDown(true);
-        if (currentSongId === id) {
+        if (currentSongId === id && isPlaying) {
           setIsFlipped(!isFlipped);
         } else {
           setGuessedWrong(true);
@@ -54,7 +57,7 @@ const MusicCard = ({
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isFlipped, keyValue, currentSongId, id]);
+  }, [isFlipped, keyValue, currentSongId, id, isPlaying]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-2">
@@ -68,9 +71,9 @@ const MusicCard = ({
           <p className="text-lg font-medium">{thing}</p>
           <p>{category}</p>
         </div>
-        <div className="flip-back">
+        <div className="flip-back p-2">
           <p className="text-lg font-semibold">{title}</p>
-          <p>{description}</p>
+          <p className="text-sm line-clamp-4">{description}</p>
         </div>
       </Card>
       <div

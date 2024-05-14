@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { useMemo } from "react";
 import { useAuth } from "./auth";
-import { useRouter } from "next/navigation";
 
 export const useApi = (): AxiosInstance => {
   const { token } = useAuth();

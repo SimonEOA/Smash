@@ -1,73 +1,63 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MusicCard from "@/components/card/MusicCard";
+import { useApi } from "@/hooks/api";
+import Link from "next/link";
 
-type Song = {
-  id: number;
-  title: string;
+type SongPlayable = {
+  name: string;
   artist: string;
-  thing: string;
-  category: string;
-  url: string;
+  album: string;
+  deezer_artist: string;
+  deezer_album: string;
+  deezer_name: string;
+  preview_url: string;
+  entity_text: string;
+  entity_value: string;
+  entity_line_text: string;
 };
 
-const Local = () => {
-  const songs = [
-    {
-      id: 0,
-      title: "Layla",
-      artist: "Eric Clapton",
-      thing: "Layla",
-      category: "Name",
-      url: "https://cdns-preview-d.dzcdn.net/stream/c-dfb2073f9912a7760ea304a2396be4ef-3.mp3",
-    },
-    {
-      id: 1,
-      title: "Alison",
-      artist: "Elvis Costello",
-      thing: "Alison",
-      category: "Name",
-      url: "https://cdns-preview-e.dzcdn.net/stream/c-efaf27c0a5d301aceba4e455f4a32425-6.mp3",
-    },
-    {
-      id: 2,
-      title: "Don't look back in anger",
-      artist: "Oasis",
-      thing: "Sally",
-      category: "Name",
-      url: "https://cdns-preview-f.dzcdn.net/stream/c-f60afd94f85abdd4ccf7614209ca6ff7-3.mp3",
-    },
-    {
-      id: 3,
-      title: "Lola",
-      artist: "The Kinks",
-      thing: "Lola",
-      category: "Name",
-      url: "https://cdns-preview-4.dzcdn.net/stream/c-455f9ee97099c538dd5fe541332f7e61-4.mp3",
-    },
-    {
-      id: 4,
-      title: "Valerie",
-      artist: "Amy Winehouse",
-      thing: "Valerie",
-      category: "Name",
-      url: "https://cdns-preview-7.dzcdn.net/stream/c-74fb75139d912676b474e32994c22d28-6.mp3",
-    },
-  ];
+// Fisher-Yates Shuffle Algorithm
+function shuffleArray(array: number[]): number[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    // Generate a random index from 0 to i
+    const j = Math.floor(Math.random() * (i + 1));
+    // Swap elements at indices i and j
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
-  const [currentSong, setCurrentSong] = useState<number | null>();
+const Local = () => {
+  const api = useApi();
+  // use api to fetch songs from backend
+  const [songs, setSongs] = useState<[]>([]);
+  const [order, setOrder] = useState<number[]>([]);
+  const [currentSong, setCurrentSong] = useState<number>(0);
   const [audios, setAudios] = useState<HTMLAudioElement[]>([]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  // fetch songs from backend and shuffle the playing order array
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await api.get("song/deezer");
+      if (response.data) {
+        setSongs(response.data);
+        const orderArray = Array.from(Array(response.data.length).keys());
+        setOrder(shuffleArray(orderArray));
+      }
+    };
+    fetchData();
+  }, [api]);
 
   useEffect(() => {
-    const audioElements = songs.map((song) => {
-      const audio = new Audio(song.url);
+    const audioElements = songs.map((song: SongPlayable) => {
+      const audio = new Audio(song.preview_url);
       audio.load();
-      console.log(song.id, song.url, audio);
+      console.log(song.name, song.preview_url, audio);
       return audio;
     });
     setAudios(audioElements);
-
-    console.log("audioElements", audioElements);
 
     return () => {
       audioElements.forEach((audio) => {
@@ -75,7 +65,7 @@ const Local = () => {
         audio.currentTime = 0;
       });
     };
-  }, []);
+  }, [songs]);
 
   useEffect(() => {
     return () => {
@@ -86,22 +76,31 @@ const Local = () => {
     };
   }, [audios]);
 
-  const StopSong = (id: number) => {
-    audios[id].pause();
-    audios[id].currentTime = 0;
-    setCurrentSong(null);
+  const startSong = () => {
+    const songId = order[currentSong];
+    audios[songId].play();
+    setIsPlaying(true);
   };
 
-  const startSong = (id: number) => {
-    setCurrentSong(id);
-    audios[id].play();
+  const StopSong = (index: number) => {
+    const songId = order[index];
+    audios[songId].pause();
+    audios[songId].currentTime = 0;
+    setCurrentSong(index + 1);
+    setIsPlaying(false);
   };
 
   useEffect(() => {
     // update current song when currensong ends
-    if (currentSong != null) {
-      audios[currentSong].addEventListener("ended", () => {
-        setCurrentSong(null);
+    if (
+      currentSong != null &&
+      isPlaying &&
+      audios &&
+      audios[order[currentSong]]
+    ) {
+      audios[order[currentSong]].addEventListener("ended", () => {
+        setCurrentSong(currentSong + 1);
+        setIsPlaying(false);
       });
     }
   }, [currentSong, audios]);
@@ -109,12 +108,11 @@ const Local = () => {
   //time left on song hase to update when song is playing
   const [timeLeft, setTimeLeft] = useState<number>(0);
   useEffect(() => {
-    if (currentSong != null) {
-      audios[currentSong].addEventListener("timeupdate", () => {
+    if (isPlaying) {
+      const index = order[currentSong];
+      audios[index].addEventListener("timeupdate", () => {
         setTimeLeft(
-          Math.floor(
-            audios[currentSong].duration - audios[currentSong].currentTime
-          )
+          Math.floor(audios[index].duration - audios[index].currentTime)
         );
       });
     }
@@ -123,10 +121,10 @@ const Local = () => {
   return (
     <main className="flex h-screen w-screen flex-col items-center justify-center gap-10">
       <div className=" flex flex-row gap-4">
-        {songs.map((song, index) => (
+        {audios.map((song, index) => (
           <div
             className={` h-5 w-5 rounded-full border-4 ${
-              currentSong === song.id ? "bg-white/50" : "bg-white/10"
+              currentSong === index ? "bg-white/50" : "bg-white/10"
             } `}
             key={index}
           />
@@ -137,41 +135,54 @@ const Local = () => {
         <p className="text-center text-2xl font-bold">Game in development</p>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-5">
-        {songs.map((song, index) => (
+        {songs.map((song: SongPlayable, index) => (
           <MusicCard
-            id={song.id}
+            id={index}
             key={index}
-            title={song.title}
-            description={song.artist}
-            thing={song.thing}
-            category={song.category}
+            title={song.name}
+            description={song.deezer_artist + " - " + song.deezer_album}
+            thing={song.entity_text}
+            category={song.entity_value}
             keyValue={(index + 1).toString()}
-            currentSongId={currentSong}
+            currentSongId={order[currentSong]}
+            isPlaying={isPlaying}
           />
         ))}
       </div>
-      <div>
-        {currentSong != null && (
-          <div className="flex flex-col items-center justify-center gap-5">
-            {timeLeft > 0 && <p>{timeLeft}</p>}
-          </div>
-        )}
-        {currentSong == null ? (
-          <button
-            className="flex flex-col items-center justify-center gap-5"
-            onClick={() => startSong(0)}
-          >
-            Start
-          </button>
-        ) : (
-          <button
-            className="flex flex-col items-center justify-center gap-5"
-            onClick={() => StopSong(0)}
-          >
-            Stop
-          </button>
-        )}
-      </div>
+      {currentSong < songs.length ? (
+        <div>
+          {isPlaying && (
+            <div className="flex flex-col items-center justify-center gap-5">
+              {timeLeft > 0 && <p>{timeLeft}</p>}
+            </div>
+          )}
+          {!isPlaying ? (
+            <button
+              className="flex flex-col items-center justify-center gap-5"
+              onClick={() => startSong()}
+            >
+              Start
+            </button>
+          ) : (
+            <button
+              className="flex flex-col items-center justify-center gap-5"
+              onClick={() => StopSong(currentSong)}
+            >
+              Stop
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-3">
+          <h2 className="text-center text-2xl font-bold">Game Ended</h2>
+          <p className="text-center text-xl font-bold">
+            Upload new songs to play more!
+          </p>
+          <Link className="btn" href="/upload/individual">
+            Upload New
+          </Link>
+        </div>
+      )}
     </main>
   );
 };

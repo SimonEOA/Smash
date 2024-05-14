@@ -1,11 +1,12 @@
 import json
 from typing import List
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, requests
+from requests import get
 from sqlalchemy.orm import Session
 from starlette import status
 from app.db.database import get_db
 from fastapi import APIRouter
-from app.api.schema import CreateSong, SongCreateManually, SongProcessNer, entity
+from app.api.schema import CreateSong, SongBase, SongCreateManually, SongPlayable, SongProcessNer, entity
 from app.db.models import SongMetadata, SongCategory, User
 from app.utils import get_current_user
 from flair.data import Sentence
@@ -137,4 +138,107 @@ def process_gpt(request: List[entity], user: User = Depends(get_current_user), d
         return valid_entities  # Return only entities evaluated as true
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Error decoding the JSON response")
+
+
+DEEZER_API_URL = "https://api.deezer.com/"
+
+
+@router.get("/deezer", response_model=List[SongPlayable])
+def get_deezer_songs(db: Session = Depends(get_db)):
+    # get all songs with category PER
+    songs = db.query(SongMetadata) \
+            .join(SongCategory, SongMetadata.id == SongCategory.song_id) \
+            .filter(SongCategory.category == "PER") \
+            .all()    
+    result = []
+
+    index = 0
+
+    print(len(songs))
+
+    if len(songs) == 0:
+        print("No songs found")
+        return result
+
+    while len(result) < 5 and index < len(songs):
+        print(songs[index].name)
+        artist = songs[index].artist
+        album = songs[index].album
+        track = songs[index].name
+        Song_category = db.query(SongCategory).filter(SongCategory.song_id == songs[index].id and SongCategory.category == "PER").first()
+        entity_text = Song_category.text
+        entity_value = Song_category.category
+        entity_line_text = Song_category.line_text
+
+        params = {"q": f"{artist}"}
+
+        if album:
+            params["artist"] = artist
+            params["album"] = album
+
+        if track:
+            params["q"] += f" track:{track}"
+
+        url = DEEZER_API_URL + "search"
+        response = get(url, params=params)
+
+        response.raise_for_status()
+
+        data = response.json()
+        response_songs = data.get("data", [])  # Handle potential absence of "data" key
+
+        print(url)
+
+        if len(response_songs) > 0:
+            print(response_songs[0]["title"])
+            result.append(SongPlayable(
+                artist=artist,
+                album=album,
+                name=track,
+                deezer_artist=response_songs[0]["artist"]["name"],
+                deezer_album=response_songs[0]["album"]["title"],
+                deezer_name=response_songs[0]["title"],
+                preview_url=response_songs[0]["preview"],
+                entity_text=entity_text,
+                entity_value=entity_value,
+                entity_line_text=entity_line_text
+            ))
+        index += 1
+
+    return result
+
+@router.post("/deezer-test", response_model=SongPlayable)
+def get_deezer_song_test(request: SongBase, db: Session = Depends(get_db)):
+    artist = request.artist
+    album = request.album
+    track = request.name
+
+    params = {"q": f"{artist}"}
+
+    if album:
+        params["artist"] = artist
+        params["album"] = album
+
+    if track:
+        params["q"] += f" track:{track}"
+
+    url = DEEZER_API_URL + "search"
+    response = get(url, params=params)
+
+    response.raise_for_status()
+
+    data = response.json()
+    songs = data.get("data", [])
+
+    print(songs)
+
+    return SongPlayable(
+        artist=artist,
+        album=album,
+        name=track,
+        deezer_artist=songs[0]["artist"]["name"],
+        deezer_album=songs[0]["album"]["title"],
+        deezer_name=songs[0]["title"],
+        preview_url=songs[0]["preview"]
+    )
 
