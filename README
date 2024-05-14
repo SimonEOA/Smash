@@ -31,13 +31,22 @@ SMASH is a monorepo project with the following components:
    pip install -r requirements.txt
    ```
 
-4. Start the frontend development server:
+4. add .env.local file in frontend/app and insert:
+   NEXT_PUBLIC_API_URL=<SERVER_URL>
+
+5. add .env.local file in backend and insert:
+   JWT_SECRET_KEY=<YOUR_SECRET>
+   SQLALCHEMY_DATABASE_URL=<YOUR_DATABASE_URL>
+   OPENAI_API_KEY=<YOUR_OPENAI_API_KEY>
+
+6. Start the frontend development server:
 
    ```
    npm run dev
    ```
 
-5. Start the backend server:
+7. Start the backend server:
+
    ```
    uvicorn main:app --reload
    ```
