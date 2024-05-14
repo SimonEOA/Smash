@@ -1,5 +1,4 @@
 "use client";
-
 import { useAuth } from "@/hooks/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,11 +15,10 @@ const Register = () => {
 
     try {
       await register(userName, email, password);
-      // Navigate to a protected route or display success message
       router.push("/login");
     } catch (error) {
       console.error("Failed to log in:", error);
-      // Show error message
+      // Ideally, show a user-friendly error message here
     }
   };
 
@@ -28,10 +26,10 @@ const Register = () => {
     <main className="flex h-screen w-screen flex-row items-center justify-center gap-10">
       <div className="flex flex-col gap-4">
         <h2 className="text-4xl font-bold">Register</h2>
-        <p className=" font-medium">
+        <p className="font-medium">
           Register to upload individual lyrics for a song directly or csv with
-          columns "title", "artist", "album" for processing and creating your
-          own deck
+          columns &quot;title&quot;, &quot;artist&quot;, &quot;album&quot; for
+          processing and creating your own deck.
         </p>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
@@ -44,7 +42,7 @@ const Register = () => {
           />
           <input
             name="email"
-            type="text"
+            type="email"
             placeholder="Email"
             className="input"
             value={email}
@@ -52,7 +50,7 @@ const Register = () => {
           />
           <input
             name="password"
-            type="text"
+            type="password"
             placeholder="Password"
             className="input"
             value={password}

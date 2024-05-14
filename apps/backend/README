@@ -1,0 +1,37 @@
+# Backend for SMASH Project
+
+This is the backend component of the SMASH project. It is responsible for handling all the server-side operations of the application.
+
+## Technology Stack
+
+The backend is built using the following technologies:
+
+- **Python**: The backend is written in Python.
+- **FastAPI**: web framework for building APIs with Python 3.6+ based on standard Python type hints.
+- **PostgreSQL**: open source object-relational database system, hosted on azure postgresql database
+
+## Architecture
+
+The backend is divided into several packages:
+
+- **api**: api contains two routes files one for songs and one for users (future improvments could be extracting form the songs file). The api folder also includes the schema and pydantic models used for typing in the routes.
+- **db**: db contains all the setup for the database aswell as the models.
+- **ml**: Is currently unused but could in the future contain finetuned ner models and such
+
+## Features
+
+The backend provides several key features:
+
+- **User Authentication**: Users can register, log in, and log out. Passwords are securely hashed before being stored in the database.
+- **Data Management**: Possible to add new songs
+- **API**: Possibility to
+
+## Future Plans
+
+We plan to continue improving and expanding the backend. Some of our plans include:
+
+- Implementing more advanced user authentication features, such as password reset and email verification.
+- Optimizing performance to handle larger amounts of data.
+- Adding more API endpoints to provide more functionality to the frontend.
+
+We welcome contributions from the community. If you're interested in contributing, please see our [contributing guidelines](CONTRIBUTING.md).

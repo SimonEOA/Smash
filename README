@@ -1,16 +1,45 @@
-SMASH 
+# SMASH
 
-Monorepo:
-    - frontend:
-        React.js (Next.js)
-    - backend:
-        Python (FastAPI)
-    - models:
-        Named Entity Recognition (NER) model:
-            - Flair
-        Language Model:
-            - OpenAI GPT-3.5 turbo api
-    - database:
-        PostgreSQL
-    - deployment:
-        in progress
+SMASH is a monorepo project with the following components:
+
+- **Frontend**: React.js (Next.js)
+- **Backend**: Python (FastAPI)
+- **Models**: Named Entity Recognition (NER) pre trained model (Flair)
+- **Language Model**: OpenAI GPT-3.5 turbo api
+- **Database**: PostgreSQL
+- **Deployment**: in progress
+
+## Installation Instructions (Local Development)
+
+1. Clone the repository:
+
+   ```
+   git clone https://github.com/SimonEOA/Smash.git
+   ```
+
+2. Install frontend dependencies:
+
+   ```
+   cd frontend/app
+   npm install
+   ```
+
+3. Install backend dependencies:
+
+   ```
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+4. Start the frontend development server:
+
+   ```
+   npm run dev
+   ```
+
+5. Start the backend server:
+   ```
+   uvicorn main:app --reload
+   ```
+
+Now you can access the application by opening your browser and navigating to http://localhost:3000.

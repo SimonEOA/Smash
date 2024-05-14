@@ -1,8 +1,7 @@
 "use client";
-
 import { useAuth } from "@/hooks/auth";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -15,11 +14,9 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(email, password);
-
       router.push("/upload/individual");
     } catch (error) {
       console.error("Failed to log in:", error);
-      // Show error message
     }
   };
 
@@ -27,10 +24,10 @@ const LoginPage: React.FC = () => {
     <main className="flex h-screen w-screen flex-row items-center justify-center gap-10">
       <div className="flex flex-col gap-4">
         <h2 className="text-4xl font-bold">Login</h2>
-        <p className=" font-medium">
-          Login to upload individual lyrics for a song directly or csv with
-          columns "title", "artist", "album" for processing and creating your
-          own deck
+        <p className="font-medium">
+          Login to upload individual lyrics for a song directly or CSV with
+          columns &quot;title&quot;, &quot;artist&quot;, &quot;album&quot; for
+          processing and creating your own deck.
         </p>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
@@ -43,7 +40,7 @@ const LoginPage: React.FC = () => {
           />
           <input
             name="password"
-            type="text"
+            type="password"
             placeholder="Password"
             className="input"
             value={password}

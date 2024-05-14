@@ -103,7 +103,7 @@ const Local = () => {
         setIsPlaying(false);
       });
     }
-  }, [currentSong, audios]);
+  }, [currentSong, audios, isPlaying, order]);
 
   //time left on song hase to update when song is playing
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -116,7 +116,7 @@ const Local = () => {
         );
       });
     }
-  }, [currentSong, audios]);
+  }, [currentSong, audios, isPlaying, order]);
 
   return (
     <main className="flex h-screen w-screen flex-col items-center justify-center gap-10">

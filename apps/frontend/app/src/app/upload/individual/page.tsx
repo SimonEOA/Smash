@@ -1,8 +1,7 @@
 "use client";
 
 import { useApi } from "@/hooks/api";
-import { request } from "http";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 type Entity = {
   text: string;
