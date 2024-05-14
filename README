@@ -17,35 +17,42 @@ SMASH is a monorepo project with the following components:
    git clone https://github.com/SimonEOA/Smash.git
    ```
 
-2. Install frontend dependencies:
+2. Set up venv:
+
+   ```
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. Install frontend dependencies:
 
    ```
    cd frontend/app
    npm install
    ```
 
-3. Install backend dependencies:
+4. Install backend dependencies:
 
    ```
    cd backend
    pip install -r requirements.txt
    ```
 
-4. add .env.local file in frontend/app and insert:
+5. add .env.local file in frontend/app and insert:
    NEXT_PUBLIC_API_URL=<SERVER_URL>
 
-5. add .env.local file in backend and insert:
+6. add .env.local file in backend and insert:
    JWT_SECRET_KEY=<YOUR_SECRET>
    SQLALCHEMY_DATABASE_URL=<YOUR_DATABASE_URL>
    OPENAI_API_KEY=<YOUR_OPENAI_API_KEY>
 
-6. Start the frontend development server:
+7. Start the frontend development server:
 
    ```
    npm run dev
    ```
 
-7. Start the backend server:
+8. Start the backend server:
 
    ```
    uvicorn main:app --reload
