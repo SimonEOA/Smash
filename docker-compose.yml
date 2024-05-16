@@ -1,0 +1,24 @@
+services:
+  nextjs-application:
+    container_name: frontend
+    build:
+      context: apps/frontend/
+      dockerfile: Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=http://127.0.0.1:80
+    restart: always
+    ports:
+      - 3000:3000
+
+  python-application:
+    container_name: backend
+    build:
+      context: apps/backend/
+      dockerfile: Dockerfile
+    environment:
+      - JWT_SECRET_KEY={JWT_SECRET_KEY}
+      - SQLALCHEMY_DATABASE_URL={SQLALCHEMY_DATABASE_URL}
+      - OPENAI_API_KEY={OPENAI_API_KEY}
+    restart: always
+    ports:
+      - 80:80

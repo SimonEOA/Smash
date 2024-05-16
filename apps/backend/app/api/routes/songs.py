@@ -13,11 +13,9 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 from flair.nn import Classifier
 from openai import OpenAI
-from dotenv import load_dotenv
 import os
 
-load_dotenv('.env.local')  # Load the environment variables from .env.local
-API_KEY = os.getenv('OPENAI_API_KEY')
+API_KEY = os.environ.get('OPENAI_API_KEY')
 
 router = APIRouter(
     prefix='/song',

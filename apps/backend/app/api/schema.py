@@ -68,7 +68,6 @@ class UserLogin(BaseModel):
     password:str
 
 class SongPlayable(SongBase):
-    preview_url: str
     deezer_artist: str
     deezer_album: str
     deezer_name: str

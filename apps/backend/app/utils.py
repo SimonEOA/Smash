@@ -15,8 +15,7 @@ from app.db.models import User
 from dotenv import load_dotenv
 import os
 
-load_dotenv('.env.local')  # Load the environment variables from .env.local
-SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
 
 
 # to get a string like this run:
