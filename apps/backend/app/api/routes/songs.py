@@ -15,6 +15,8 @@ from flair.nn import Classifier
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import random
+
 
 load_dotenv('.env.local')  # Load the environment variables from .env.local
 API_KEY = os.getenv('OPENAI_API_KEY')
@@ -178,6 +180,9 @@ def get_deezer_songs(db: Session = Depends(get_db)):
     if len(songs) == 0:
         print("No songs found")
         return result
+    
+    # reorder the songs randomly
+    random.shuffle(songs)
 
     while len(result) < 5 and index < len(songs):
         print(songs[index].name)

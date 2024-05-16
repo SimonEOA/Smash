@@ -88,7 +88,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async () => {
     if (token) {
       try {
-        // Manually set up the axios call for logout to avoid dependency issues
         await axios.delete(`${apiBaseUrl}/user/logout`, {
           headers: {
             Authorization: `Bearer ${token}`,
