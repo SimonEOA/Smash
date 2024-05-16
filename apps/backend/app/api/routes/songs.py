@@ -30,32 +30,19 @@ client = OpenAI(
     api_key=API_KEY
 )
 
-
-@router.get('/get_all_test', response_model=List[CreateSong])
-def test_songs(db: Session = Depends(get_db)):
-
-    song = db.query(SongMetadata).all()
-
-    return  song
-
-@router.post('/create', status_code=status.HTTP_201_CREATED)
-def add_new_song(request:CreateSong, db:Session = Depends(get_db)):
-
-    new_song = SongMetadata(name=request.name, artist=request.artist, album=request.album)
-    db.add(new_song)
-    db.commit()
-    db.refresh(new_song)
-
-    for entity in request.entities:
-        new_category = SongCategory(song_id=new_song.id, category=entity.value, text=entity.text, line=entity.line, start=entity.start, end=entity.end)
-        db.add(new_category)
-        db.commit()
-        db.refresh(new_category)
-
-    return {"message": "Song added successfully"}
-
 @router.post('/upload', status_code=status.HTTP_200_OK)
 def add_manually(request:SongCreateManually, user: User = Depends(get_current_user), db:Session = Depends(get_db)):
+    """
+    Manually add a song with detailed metadata.
+
+    Args:
+        request (SongCreateManually): Pydantic model containing song details and entities.
+        user (User): Currently authenticated user (injected by FastAPI's dependency system).
+        db (Session): SQLAlchemy session object (injected by FastAPI's dependency system).
+
+    Returns:
+        dict: A message indicating that the song was added successfully.
+    """
     # check if song already exists (naive check based on user given name, artist, album - should be improved in the future)
     existing_song = db.query(SongMetadata).filter(SongMetadata.name == request.name, SongMetadata.artist == request.artist, SongMetadata.album == request.album).first()
     if not existing_song:
@@ -73,8 +60,19 @@ def add_manually(request:SongCreateManually, user: User = Depends(get_current_us
 
     return {"message": f"Song {new_song.name} added successfully"}
 
-@router.post('/process/ner', response_model=List[entity])
+@router.post('/process/ner', response_model=List[entity], status_code=status.HTTP_200_OK)
 def process_ner(request: SongProcessNer, user: User = Depends(get_current_user), db:Session = Depends(get_db)):
+    """
+    Process song lyrics for Named Entity Recognition (NER) using Flair.
+
+    Args:
+        request (SongProcessNer): Pydantic model containing song lyrics.
+        user (User): Currently authenticated user (injected by FastAPI's dependency system).
+        db (Session): SQLAlchemy session object (injected by FastAPI's dependency system).
+
+    Returns:
+        List[entity]: A list of recognized entities in the song lyrics.
+    """
     lyrics = request.lyrics
 
     results = []
@@ -101,6 +99,17 @@ def process_ner(request: SongProcessNer, user: User = Depends(get_current_user),
 
 @router.post('/process/gpt', response_model=List[entity])
 def process_gpt(request: List[entity], user: User = Depends(get_current_user), db:Session = Depends(get_db)):
+    """
+    Process entities using OpenAI's GPT-3.5-turbo model for evaluation.
+
+    Args:
+        request (List[entity]): List of entities to be evaluated.
+        user (User): Currently authenticated user (injected by FastAPI's dependency system).
+        db (Session): SQLAlchemy session object (injected by FastAPI's dependency system).
+
+    Returns:
+        List[entity]: A list of valid entities evaluated by the model.
+    """
     # Create the user message
     user_message = "Evaluate the following entities: " + " | ".join(
         f"Entity: '{entry.text}', Type: '{entry.value}', Context: '{entry.line_text}'"
@@ -145,12 +154,22 @@ DEEZER_API_URL = "https://api.deezer.com/"
 
 @router.get("/deezer", response_model=List[SongPlayable])
 def get_deezer_songs(db: Session = Depends(get_db)):
+    """
+    Retrieve songs from Deezer API based on existing song metadata with category 'PER'.
+
+    Args:
+        db (Session): SQLAlchemy session object (injected by FastAPI's dependency system).
+
+    Returns:
+        List[SongPlayable]: A list of playable songs retrieved from Deezer API.
+    """
+
     # get all songs with category PER
     songs = db.query(SongMetadata) \
-            .join(SongCategory, SongMetadata.id == SongCategory.song_id) \
-            .filter(SongCategory.category == "PER") \
-            .all()    
-    result = []
+        .join(SongCategory, SongMetadata.id == SongCategory.song_id) \
+        .filter(SongCategory.category == "PER") \
+        .all()    
+    result: List[SongPlayable] = []
 
     index = 0
 
@@ -206,39 +225,3 @@ def get_deezer_songs(db: Session = Depends(get_db)):
         index += 1
 
     return result
-
-@router.post("/deezer-test", response_model=SongPlayable)
-def get_deezer_song_test(request: SongBase, db: Session = Depends(get_db)):
-    artist = request.artist
-    album = request.album
-    track = request.name
-
-    params = {"q": f"{artist}"}
-
-    if album:
-        params["artist"] = artist
-        params["album"] = album
-
-    if track:
-        params["q"] += f" track:{track}"
-
-    url = DEEZER_API_URL + "search"
-    response = get(url, params=params)
-
-    response.raise_for_status()
-
-    data = response.json()
-    songs = data.get("data", [])
-
-    print(songs)
-
-    return SongPlayable(
-        artist=artist,
-        album=album,
-        name=track,
-        deezer_artist=songs[0]["artist"]["name"],
-        deezer_album=songs[0]["album"]["title"],
-        deezer_name=songs[0]["title"],
-        preview_url=songs[0]["preview"]
-    )
-

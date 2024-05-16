@@ -6,7 +6,8 @@ export const useApi = (): AxiosInstance => {
   const { token } = useAuth();
 
   const api: AxiosInstance = useMemo(() => {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL;
+    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+    console.log("API URL", baseURL);
 
     if (!baseURL) {
       throw new Error("API base URL is not defined");
